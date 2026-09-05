@@ -65,4 +65,9 @@ Evaluate the debate and return your verdict as JSON.
             ],
     )
 
-    return json.loads(response.message.content)
+    result = json.loads(response.message.content)
+
+    if result["winner"] == "assistant":
+        result["winner"] = "agent"
+
+    return result
