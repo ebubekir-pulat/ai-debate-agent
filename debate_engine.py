@@ -1,5 +1,7 @@
 from ollama import chat, ChatResponse
+
 from prompts import DEBATE_SYSTEM_PROMPT
+from judge import judge_debate
 
 class Debate:
     def __init__(
@@ -65,3 +67,10 @@ class Debate:
             self.status = "finished"
 
         return agent_response
+
+    
+    def judge(self):
+        if self.status != "finished":
+            raise RuntimeError("The debate is not finished.")
+
+        return judge_debate(self.messages)
