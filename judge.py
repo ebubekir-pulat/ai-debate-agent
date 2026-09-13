@@ -67,7 +67,11 @@ Evaluate the debate and return your verdict as JSON.
 
     result = json.loads(response.message.content)
 
-    if result["winner"] == "assistant":
+    if result["user_score"] > result["agent_score"]:
+        result["winner"] = "user"
+    elif result["agent_score"] > result["user_score"]:
         result["winner"] = "agent"
+    else:
+        result["winner"] = "tie"
 
     return result
