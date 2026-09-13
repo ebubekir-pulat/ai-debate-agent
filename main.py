@@ -61,9 +61,14 @@ def main():
 
     debate.start()
 
-    print("\nDebate started!")
-    print(f"AI will argue: {agent_position}")
-    print(f"Rounds: {max_rounds}")
+    print("\n" + "=" * 40)
+    print("           DEBATE STARTED")
+    print("=" * 40)
+    print(f"Topic:      {topic}")
+    print(f"Your Side:  {user_position}")
+    print(f"AI's side:  {agent_position}")
+    print(f"Rounds:     {max_rounds}")
+    print("=" * 40)
 
     while debate.status == "active":
         print(f"\n--- Round {debate.round_number + 1} / {max_rounds} ---")
@@ -87,16 +92,42 @@ def main():
         print(f"\nAI: {response}")
 
     if debate.status == "finished":
-        print("\nDebate complete!")
-        print("Judging the debate...")
+        print("\n" + "=" * 40)
+        print("          DEBATE COMPLETE")
+        print("=" * 40)
+
+        print("\nJudging the debate...")
 
         result = debate.judge()
 
-        print("\n=== FINAL VERDICT ===")
-        print(f"Winner: {result['winner']}")
+        print("\n" + "=" * 40)
+        print("           FINAL VERDICT")
+        print("=" * 40)
+
+        print(f"\nWinner: {result['winner']}")
         print(f"Your score: {result['user_score']}")
         print(f"AI score: {result['agent_score']}")
-        print(f"\nSummary: {result['summary']}")
+
+        print("\nYour strengths:")
+        for strength in result["user_strengths"]:
+            print(f"  - {strength}")
+
+        print("\nYour weaknesses:")
+        for weakness in result["user_weaknesses"]:
+            print(f"  - {weakness}")
+
+        print("\nAI strengths:")
+        for strength in result["agent_strengths"]:
+            print(f"  - {strength}")
+
+        print("\nAI weaknesses:")
+        for weakness in result["agent_weaknesses"]:
+            print(f"  - {weakness}")
+
+        print("\nSummary:")
+        print(result["summary"])
+
+        print("\n" + "=" * 40)
 
     
 if __name__ == "__main__":
