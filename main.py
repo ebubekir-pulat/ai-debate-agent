@@ -1,6 +1,6 @@
 from debate_engine import Debate
 
-def main():
+def run_debate():
     print("=" * 40)
     print("        AI DEBATE AGENT")
     print("=" * 40)
@@ -129,6 +129,17 @@ def main():
 
         print("\n" + "=" * 40)
 
-    
+
+def main():
+    while True:
+        run_debate()
+
+        choice = input("\nStart another debate? (y/n): ").strip().lower()
+
+        if choice != "y":
+            print("\nThanks for debating!")
+            break    
+
+
 if __name__ == "__main__":
     main()
