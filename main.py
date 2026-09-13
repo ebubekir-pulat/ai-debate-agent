@@ -5,16 +5,52 @@ def main():
     print("        AI DEBATE AGENT")
     print("=" * 40)
 
-    topic = input("\nTopic: ").strip()
-    user_position = input("Your position: ").strip()
-    agent_position = input("AI's opposing position: ").strip()
+    # Get Topic
+    while True:
+        topic = input("\nTopic: ").strip()
 
-    rounds_input = input("Number of rounds (Press Enter for 5): ").strip()
+        if topic:
+            break
 
-    if rounds_input:
-        max_rounds = int(rounds_input)
-    else:
-        max_rounds = 5
+        print("Topic cannot be empty.")
+
+    # Get User Position
+    while True:
+        user_position = input("Your position: ").strip()
+        
+        if user_position:
+            break
+        
+        print("Your position cannot be empty.")
+
+    # Get Agent's Position
+    while True:
+        agent_position = input("AI's opposing position: ").strip()
+
+        if agent_position:
+            break
+
+        print("AI's position cannot be empty.")
+
+    # Get Number of Rounds
+    while True:
+        rounds_input = input("Number of rounds (Press Enter for 5): ").strip()
+
+        if not rounds_input:
+            max_rounds = 5
+            break
+        
+        try:
+            max_rounds = int(rounds_input)
+
+            if max_rounds < 1:
+                print("Please enter a number greater than 0.")
+                continue
+
+            break
+
+        except ValueError:
+            print("Please enter a valid whole number.")
 
     debate = Debate(
         topic=topic,
