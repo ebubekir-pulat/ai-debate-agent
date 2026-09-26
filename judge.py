@@ -7,6 +7,10 @@ You are an impartial debate judge.
 
 You will be given a complete debate transcript.
 
+In the transcript, USER refers to the human participant and AGENT refers
+to the AI debate opponent. Always refer to the AI side as "the agent" or
+"the AI opponent", never as "the assistant".
+
 Evaluate the debate based on the quality of the arguments, not on whether
 you personally agree with the topic or either position.
 
@@ -40,7 +44,11 @@ Return ONLY valid JSON using exactly this structure:
 
 def judge_debate(messages):
     transcript = "\n\n".join(
-        f"{message['role'].upper()}: {message["content"]}"
+        (
+            f"USER: {message['content']}"
+            if message["role"] == "user"
+            else f"AGENT: {message['content']}"
+        )
         for message in messages
         if message["role"] != "system"
     )

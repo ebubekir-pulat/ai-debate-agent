@@ -72,6 +72,7 @@ def run_debate():
 
     while debate.status == "active":
         print(f"\n--- Round {debate.round_number + 1} / {max_rounds} ---")
+        print("(Type 'quit' to abandon the debate)")
 
         try:
             user_input = input("\nYou: ")
@@ -84,8 +85,8 @@ def run_debate():
             continue
 
         if user_input.lower() == "quit":
-            print("Debate ended.")
-            break
+            print("\nDebate abandoned.")
+            return
 
         response = debate.respond(user_input)
 
