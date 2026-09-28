@@ -1,5 +1,7 @@
 import streamlit as st
 
+from debate_engine import Debate
+
 st.title("AI Debate Agent")
 
 st.subheader("Debate setup")
@@ -34,4 +36,19 @@ if st.button("Start Debate"):
     elif not agent_position.strip():
         st.error("Please enter the AI's position.")
     else:
-        st.success("Debate configuration is valid!")
+        debate = Debate(
+            topic=topic,
+            user_position=user_position,
+            agent_position=agent_position,
+            max_rounds=max_rounds,
+        )
+
+        debate.start()
+
+        st.session_state.debate = debate
+        st.session_state.debate_started = True
+
+        st.success("Debate started!")
+
+if st.session_state.get("debate_started", False):
+    st.write("The debate is ready.")
