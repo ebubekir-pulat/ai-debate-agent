@@ -2,12 +2,6 @@ import streamlit as st
 
 from debate_engine import Debate
 
-if "ai_thinking" not in st.session_state:
-    st.session_state.ai_thinking = False
-
-if "pending_user_input" not in st.session_state:
-    st.session_state.pending_user_input = None
-
 st.title("AI Debate Agent")
 
 # --------------------------------------------------
@@ -59,9 +53,6 @@ if not st.session_state.get("debate_started", False):
 
             st.session_state.debate = debate
             st.session_state.debate_started = True
-            st.session_state.ai_thinking = False
-            st.session_state.pending_user_input = None
-
             st.rerun()
 
 
@@ -93,32 +84,81 @@ else:
                 st.write(message["content"])
 
     # User input
-    if debate.status == "active" and not st.session_state.ai_thinking:
+    if debate.status == "active":
 
-        user_input = st.chat_input(
-            "Enter your argument..."
-        )
+        with st.form("debate_form", clear_on_submit=True):
 
-        if user_input:
-
-            st.session_state.pending_user_input = user_input
-            st.session_state.ai_thinking = True
-            st.rerun()
-
-    elif debate.status == "active" and st.session_state.ai_thinking:
-        
-        with st.spinner("AI is thinking..."):
-            response = debate.respond(
-                st.session_state.pending_user_input
+            user_input = st.text_area(
+                "Your argument",
+                placeholder="Enter your argument...",
             )
 
-        st.session_state.pending_user_input = None
-        st.session_state.ai_thinking = False
-        st.rerun()
+            submitted = st.form_submit_button("Send Argument")
+
+        if submitted:
+
+            if not user_input.strip():
+                st.warning("Please enter an argument.")
+            else:
+                with st.spinner("AI is thinking..."):
+                    debate.respond(user_input)
+
+                st.rerun()
 
     else:
         st.success("Debate complete!")
 
-        if st.button("Show Final Verdict"):
-            result = debate.judge()
-            st.session_state.result = result
+        if "result" not in st.session_state:
+            with st.spinner("Judging the debate..."):
+                st.session_state.result = debate.judge()
+
+        result = st.session_state.result
+
+        st.divider()
+
+        st.subheader("Final Verdict")
+
+        if result["winner"] == "user":
+            st.success("Winner: You")
+        elif result["winner"] == "agent":
+            st.info("Winner: AI")
+        else:
+            st.warning("Result: Tie")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.metric("Your Score", result["user_score"])
+
+        with col2:
+            st.metric("AI Score", result["agent_score"])
+
+        st.subheader("Your Performance")
+
+        st.write("**Strengths**")
+        for strength in result["user_strengths"]:
+            st.write(f"- {strength}")
+
+        st.write("**Weaknesses**")
+        for weakness in result["user_weaknesses"]:
+            st.write(f"- {weakness}")
+
+        st.subheader("AI Performance")
+
+        st.write("**Strengths**")
+        for strength in result["agent_strengths"]:
+            st.write(f"- {strength}")
+
+        st.write("**Weaknesses**")
+        for weakness in result["agent_weaknesses"]:
+            st.write(f"- {weakness}")
+
+        st.subheader("Summary")
+        st.write(result["summary"])
+
+        st.divider()
+
+        if st.button("New Debate"):
+            for key in st.session_state.keys():
+                del st.session_state[key]
+            st.rerun()
